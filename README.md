@@ -6,10 +6,8 @@
 
 ## Quick Start
 1. **Python setup**
-   - Python 3.10+
    - `pip install -r requirements.txt`
 2. **Environment**
-   - Copy `.env.example` to `.env` and adjust values.
    - Minimal local run needs no secrets. For webhook validation or LLM replies add `TWILIO_AUTH_TOKEN`, `OPENAI_API_KEY`, etc.
 3. **Run the API**
    - `uvicorn app.main:app --reload --host 0.0.0.0 --port 8000`
@@ -20,14 +18,14 @@
    - Look up profiles: `GET /profiles/by_phone/{phone}`
 
 ## Real-Time Phone Support Flow
-1. Run the FastAPI app (step above).
+1. Run the FastAPI app.
 2. Expose it publicly during testing with ngrok: `ngrok http 8000` (install first). Copy the HTTPS forwarding URL.
 3. Configure Twilio Voice number webhook to `https://<ngrok-id>.ngrok.io/voice/incoming`.
 4. Call the Twilio number. The flow:
    - Twilio sends call events to `/voice/incoming`.
-   - The app loads caller context (profile DB, CRM lookup, or default language detection).
+   - The app loads caller context (profile DB, CRM lookup).
    - `/voice/handle` returns TwiML `<Say>` using personalized language + voice.
-5. Adjust prompts or responses in `app/services/nlp.py` and restart (or rely on `--reload`).
+5. Adjust prompts or responses in `app/services/nlp.py` and restart 
 
 ## CRM / External Profile Lookup
 - Set these env vars (optional):
@@ -45,19 +43,7 @@
 - **Speech**: Uses Twilio `<Gather input="speech">` for ASR. Swap to external ASR in `app/services/asr.py` if needed.
 - **TTS**: Uses `<Say>`. Custom TTS streaming hooks live in `app/services/tts.py`.
 - **Dynamic replies**: Implemented in `app/services/nlp.py`; plug in OpenAI or rule-based templates.
-- **Security**: Stores minimal PII (phone, gender, language). Add HTTPS, webhook signature validation (enable via `TWILIO_AUTH_TOKEN`), and access controls before production deployments.
 
-## Local Testing Without Twilio
-- Call `POST /voice/handle` with form data (`From`, `SpeechResult`) to inspect returned TwiML.
-- Example:
-  ```bash
-  curl -X POST http://localhost:8000/voice/handle \
-       -d "From=+15551234567" \
-       -d "SpeechResult=I need help with my order"
-  ```
+  
 
-## Next Enhancements
-- Add RAG over your knowledge base for accurate answers.
-- Build an admin UI for analytics and prompt/voice management.
-- Add authentication for profile management APIs.
-- Capture or confirm gender/language preferences on first call.
+
