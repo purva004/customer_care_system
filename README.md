@@ -19,7 +19,7 @@
 
 ## Real-Time Phone Support Flow
 1. Run the FastAPI app.
-2. Expose it publicly during testing with ngrok: `ngrok http 8000` (install first). Copy the HTTPS forwarding URL.
+2. Expose it publicly during testing with ngrok: `ngrok http 8000`. Copy the HTTPS forwarding URL.
 3. Configure Twilio Voice number webhook to `https://<ngrok-id>.ngrok.io/voice/incoming`.
 4. Call the Twilio number. The flow:
    - Twilio sends call events to `/voice/incoming`.
@@ -45,5 +45,6 @@
 - **Dynamic replies**: Implemented in `app/services/nlp.py`; plug in OpenAI or rule-based templates.
 
   
+
 
 
